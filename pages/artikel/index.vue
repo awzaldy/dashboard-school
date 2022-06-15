@@ -1,8 +1,10 @@
 <template>
   <div>
-    <base-button type="info" class="btn-fill mb-4">
-      Tambahkan Artikel
-    </base-button>
+    <nuxt-link to="/tambahartikel">
+      <base-button type="info" class="btn-fill mb-4">
+        Tambahkan Artikel
+      </base-button>
+    </nuxt-link>
     <card type="chart">
       <template slot="header">
         <div class="row">
