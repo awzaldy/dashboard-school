@@ -1,6 +1,8 @@
 <template>
   <div>
-    <base-button type="info" class="btn-fill mb-4"> Tambahkan Artikel </base-button>
+    <base-button type="info" class="btn-fill mb-4">
+      Tambahkan Artikel
+    </base-button>
     <card type="chart">
       <template slot="header">
         <div class="row">
@@ -21,7 +23,9 @@
 </template>
 
 <script>
-export default {};
+export default {
+  middleware: ["check-auth", "auth"],
+};
 </script>
 
 <style>

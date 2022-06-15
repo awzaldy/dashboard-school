@@ -8,6 +8,7 @@
 
 export default {
   name: 'dashboard',
+  middleware: ["check-auth", "auth"],
   components: {
 
   },

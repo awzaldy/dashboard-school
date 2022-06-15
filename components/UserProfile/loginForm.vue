@@ -18,9 +18,9 @@
             </base-input>
           </div>
           <div class="col-md-12 mt-4">
-            <nuxt-link to="/">
-              <base-button type="info" class="btn-fill"> Masuk </base-button>
-            </nuxt-link>
+
+              <base-button type="info" class="btn-fill" @click="onSubmit"> Masuk </base-button>
+
           </div>
         </form>
       </div>
@@ -36,7 +36,18 @@ export default {
       uid: "",
     };
   },
-  methods: {},
+  methods: {
+    async onSubmit() {
+      await this.$store
+        .dispatch("authAdmin", {
+          email: this.email,
+          password: this.password,
+        })
+        .then(() => {
+          this.$router.push({ path: `/`, force: true });
+        });
+    },
+  },
 };
 </script>
 <style></style>
