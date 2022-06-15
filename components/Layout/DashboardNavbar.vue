@@ -54,10 +54,10 @@
         title-classes="nav-link"
         menu-classes="dropdown-navbar"
       >
-        <template
-          slot="title"
-        >
-          <div class="photo"><img src="img/icons/Tes-Icon-Logo-EB-Blue.png" /></div>
+        <template slot="title">
+          <div class="photo">
+            <img src="img/icons/Tes-Icon-Logo-EB-Blue.png" />
+          </div>
           <b class="caret d-none d-lg-block d-xl-block"></b>
           <p class="d-lg-none">Log out</p>
         </template>
@@ -69,30 +69,30 @@
         </li>
         <div class="dropdown-divider"></div>
         <li class="nav-link">
-          <a href="#" class="nav-item dropdown-item">Log out</a>
+          <div class="nav-item dropdown-item" @click="onLogout">Log out</div>
         </li>
       </base-dropdown>
     </ul>
   </base-nav>
 </template>
 <script>
-import { CollapseTransition } from 'vue2-transitions';
-import { BaseNav, Modal } from '@/components';
+import { CollapseTransition } from "vue2-transitions";
+import { BaseNav, Modal } from "@/components";
 
 export default {
   components: {
     CollapseTransition,
     BaseNav,
-    Modal
+    Modal,
   },
   computed: {
     routeName() {
       const { path } = this.$route;
-      let parts = path.split('/')
-      if(parts == ','){
-        return 'Dashboard';
+      let parts = path.split("/");
+      if (parts == ",") {
+        return "Dashboard";
       }
-      return parts.map(p => this.capitalizeFirstLetter(p)).join(' ');
+      return parts.map((p) => this.capitalizeFirstLetter(p)).join(" ");
     },
   },
   data() {
@@ -100,13 +100,17 @@ export default {
       activeNotifications: false,
       showMenu: false,
       searchModalVisible: false,
-      searchQuery: ''
+      searchQuery: "",
     };
   },
   methods: {
+    async onLogout() {
+      await this.$router.push({ path: "/login", force: true });
+      await this.$store.dispatch("logout");
+    },
     capitalizeFirstLetter(string) {
-      if (!string || typeof string !== 'string') {
-        return ''
+      if (!string || typeof string !== "string") {
+        return "";
       }
       return string.charAt(0).toUpperCase() + string.slice(1);
     },
@@ -118,8 +122,8 @@ export default {
     },
     toggleMenu() {
       this.showMenu = !this.showMenu;
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>
