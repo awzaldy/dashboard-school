@@ -1,4 +1,5 @@
-export default {
+var webpack = require('webpack');
+module.exports = {
   /*
   ** Headers of the page
   */
@@ -35,7 +36,14 @@ export default {
   css: [
     'assets/css/demo.css',
     'assets/css/nucleo-icons.css',
-    'assets/sass/black-dashboard.scss'
+    'assets/sass/black-dashboard.scss',
+    // ...
+    'quill/dist/quill.core.css',
+    // for snow theme
+    'quill/dist/quill.snow.css',
+    // for bubble theme
+    'quill/dist/quill.bubble.css'
+    // ...
   ],
   /*
   ** Plugins to load before mounting the App
@@ -47,17 +55,28 @@ export default {
     {
       src: '@/plugins/firebase.js'
     },
+    {
+      src: '~plugins/nuxt-quill-plugin',
+      ssr: false
+    },
   ],
   /*
   ** Nuxt.js dev-modules
   */
-  buildModules: [],
+  buildModules: [
+    '@nuxtjs/moment',
+  ],
+  moment: {
+    defaultLocale: 'id',
+    locales: ['id']
+  },
   /*
   ** Nuxt.js modules
   */
   modules: [
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
+    "vue2-editor/nuxt",
   ],
   /*
   ** Build configuration
@@ -71,6 +90,20 @@ export default {
     /*
     ** You can extend webpack config here
     */
+    plugins: [
+      new webpack.ProvidePlugin({
+        'window.Quill': 'quill/dist/quill.js',
+        'Quill': 'quill/dist/quill.js'
+      }),
+    ],
+    babel: {
+      plugins: [
+        ["@babel/plugin-proposal-class-properties", { "loose": true }],
+        ["@babel/plugin-proposal-private-methods", { "loose": true }],
+        ["@babel/plugin-proposal-private-property-in-object", { "loose": true }]
+      ],
+      compact: true
+    },
     extend(config, ctx) {
     },
     babel: {

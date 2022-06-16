@@ -17,7 +17,7 @@
         </button>
       </div>
       <a class="navbar-brand ml-xl-3 ml-5" href="#pablo">
-        ADMIN PAGE</a
+        SUPER ADMIN PAGE</a
       >
     </div>
 
