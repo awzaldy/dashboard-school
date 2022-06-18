@@ -28,6 +28,8 @@
   </card>
 </template>
 <script>
+import Cookie from "js-cookie";
+import axios from "axios";
 export default {
   data() {
     return {
@@ -44,7 +46,22 @@ export default {
           password: this.password,
         })
         .then(() => {
-          this.$router.push({ path: `/`, force: true });
+          let id = Cookie.get("uid");
+          console.log("ini id dari cookie " + id);
+          axios
+            .get(process.env.baseUrl + "/DataAdmin/" + id + ".json")
+            .then((res) => {
+              let role = res.data.role;
+              let nama = res.data.nama;
+              Cookie.set("nama", nama);
+              if (role === "Admin") {
+                this.$router.push({ path: `/`, force: true });
+              }
+              if (role === "SuperAdmin") {
+                this.$router.push({ path: `/superadmin`, force: true });
+              }
+            })
+            .catch((e) => context.error(e));
         });
     },
   },

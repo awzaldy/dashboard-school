@@ -19,6 +19,7 @@
           >
           </sidebar-item>
         </slot>
+        
       </ul>
     </div>
   </div>

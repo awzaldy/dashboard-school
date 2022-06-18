@@ -40,6 +40,15 @@
           }"
         >
         </sidebar-item>
+
+        <li class="mt-5">
+          <a
+            href="https://www.creative-tim.com/product/nuxt-black-dashboard-pro"
+            target="_blank"
+          >
+            <p>{{admin}}</p>
+          </a>
+        </li>
       </template>
     </side-bar>
     <!--Share plugin (for demo purposes). You can remove it if don't plan on using it-->
@@ -60,6 +69,7 @@
 </template>
 <script>
 /* eslint-disable no-new */
+import Cookie from "js-cookie";
 import PerfectScrollbar from "perfect-scrollbar";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
 import SidebarShare from "@/components/Layout/SidebarSharePlugin";
@@ -94,6 +104,7 @@ export default {
   },
   data() {
     return {
+      admin:"",
       sidebarBackground: "vue", //vue|blue|orange|green|red|primary
     };
   },
@@ -125,6 +136,10 @@ export default {
   },
   mounted() {
     this.initScrollbar();
+  },
+  async beforeMount() {
+    let cookieadmin = Cookie.get("nama");
+    this.admin = cookieadmin;
   },
 };
 </script>

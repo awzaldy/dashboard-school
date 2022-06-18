@@ -46,9 +46,6 @@ const createStore = () => {
                         }
                     )
                         .then((result) => {
-
-
-
                             axios.put(process.env.baseUrl + "/DataAdmin/" + result.data.localId + ".json", authData).then((r) => {
                                 console.log(result.data.localId);
                                 vuexContext.commit('addAdmin', authData)
@@ -125,7 +122,7 @@ const createStore = () => {
                 Cookie.remove("jwt");
                 Cookie.remove("uid");
                 Cookie.remove("expirationDate");
-                Cookie.remove("username");
+                Cookie.remove("nama");
                 if (process.client) {
                     localStorage.removeItem("token");
                     localStorage.removeItem("tokenExpiration");
