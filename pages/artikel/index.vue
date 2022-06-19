@@ -7,29 +7,28 @@
           Tambahkan Artikel
         </base-button>
       </nuxt-link>
-      <card type="chart">
-        <template slot="header">
-          <div class="row">
-            <div class="col-sm-12">
-              <h5 class="card-category">Jam Tersibuk</h5>
-              <h2 class="card-title">18 : 00</h2>
-              <div class="card-body">
-                <h1 class="mb-1 mt-2">16</h1>
-                <h5>Rata-Rata Kunjungan</h5>
-                <h1 class="mb-1 mt-5">300</h1>
-                <h5>Total Kunjugan</h5>
-              </div>
-            </div>
-          </div>
-        </template>
-      </card>
+      <table-artikel :content="loadedPostAdmin"></table-artikel>
     </card>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+import Cookie from "js-cookie";
+import { Table, TableColumn } from "element-ui";
+import TableArtikel from '~/components/TableArtikel.vue';
 export default {
   middleware: ["check-auth", "auth"],
+  components: {
+    TableArtikel,
+    [Table.name]: Table,
+    [TableColumn.name]: TableColumn,
+  },
+  computed: {
+    loadedPostAdmin() {
+      return this.$store.getters.loadedPostsAdmin;
+    },
+  },
 };
 </script>
 

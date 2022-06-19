@@ -53,6 +53,8 @@ export default {
             .then((res) => {
               let role = res.data.role;
               let nama = res.data.nama;
+              let jabatan = res.data.jabatan;
+              Cookie.set("jabatan", jabatan);
               Cookie.set("nama", nama);
               if (role === "Admin") {
                 this.$router.push({ path: `/`, force: true });

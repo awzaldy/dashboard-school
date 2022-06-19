@@ -7,6 +7,8 @@ const createStore = () => {
         state: {
             token: null,
             admin: [],
+            loadedPosts: [],
+            loadedPostsAdmin: [],
             uid: "",
 
 
@@ -19,8 +21,20 @@ const createStore = () => {
             setAdmin(state, admin) {
                 state.admin = admin;
             },
+            setPosts(state, posts) {
+                state.loadedPosts = posts;
+            },
+            setPostsAdmin(state, posts) {
+                state.loadedPostsAdmin = posts;
+            },
             addAdmin(state, admindata) {
                 state.admin.push(admindata);
+            },
+            addPosts(state, post) {
+                state.loadedPosts.push(post);
+            },
+            addPostsAdmin(state, post) {
+                state.loadedPostsAdmin.push(post);
             },
             setToken(state, token) {
                 state.token = token;
@@ -31,6 +45,17 @@ const createStore = () => {
         },
         actions: {
             nuxtServerInit(vuexContext, context) {
+                return axios.all([
+                    axios.get(process.env.baseUrl + "/DataArtikel.json")
+                        .then(res => {
+                            const postsArray = []
+                            for (const key in res.data) {
+                                postsArray.push({ ...res.data[key], id: key })
+                            }
+                            vuexContext.commit('setPosts', postsArray)
+                        })
+                        .catch(e => context.error(e)),
+                ])
             },
 
             daftarAdmin(vuexContext, authData) {
@@ -56,9 +81,41 @@ const createStore = () => {
                 ])
 
             },
+            addPosts(vuexContext, post) {
+
+                return axios.all([
+                    axios
+                        .post(
+                            process.env.baseUrl + "/DataArtikel.json",
+                            post
+                        )
+                        .then((result) =>
+                            vuexContext.commit('addPosts', { ...post, id: result.data.name })
+
+                        )
+                        .catch((e) => console.log(e)),
+                ])
+
+            },
+            addPostsAdmin(vuexContext, post) {
+
+                return axios.all([
+                    axios
+                        .post(
+                            process.env.baseUrl + "/DataAdmin/" + Cookie.get("uid") + "/DataArtikel.json",
+                            post
+                        )
+                        .then((result) =>
+                            vuexContext.commit('addPostsAdmin', { ...post, id: result.data.name })
+
+                        )
+                        .catch((e) => console.log(e)),
+                ])
+
+            },
             authAdmin(vuexContext, authData) {
-                return axios
-                    .post(
+                return axios.all([
+                    axios.post(
                         "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" +
                         process.env.fbApi,
                         {
@@ -67,24 +124,27 @@ const createStore = () => {
                             returnSecureToken: true,
                         }
                     )
-                    .then((result) => {
-                        vuexContext.commit('setToken', result.data.idToken);
-                        vuexContext.commit('setUid', result.data.localId);
-                        localStorage.setItem("token", result.data.idToken);
-                        localStorage.setItem("uid", result.data.localId);
-                        localStorage.setItem(
-                            "tokenExpiration",
-                            new Date().getTime() + Number.parseInt(result.data.expiresIn) * 1000
-                        );
-                        Cookie.set("jwt", result.data.idToken);
-                        Cookie.set("uid", result.data.localId);
-                        Cookie.set(
-                            "expirationDate",
-                            new Date().getTime() + Number.parseInt(result.data.expiresIn) * 1000
-                        );
+                        .then((result) => {
+                            vuexContext.commit('setToken', result.data.idToken);
+                            vuexContext.commit('setUid', result.data.localId);
+                            localStorage.setItem("token", result.data.idToken);
+                            localStorage.setItem("uid", result.data.localId);
+                            localStorage.setItem(
+                                "tokenExpiration",
+                                new Date().getTime() + Number.parseInt(result.data.expiresIn) * 1000
+                            );
+                            Cookie.set("jwt", result.data.idToken);
+                            Cookie.set("uid", result.data.localId);
+                            Cookie.set(
+                                "expirationDate",
+                                new Date().getTime() + Number.parseInt(result.data.expiresIn) * 1000
+                            );
 
-                    })
-                    .catch((e) => console.log(e));
+                        })
+                        .catch((e) => console.log(e)),
+
+                ])
+
             },
             initAuth(vuexContext, req) {
                 let token;
@@ -114,6 +174,15 @@ const createStore = () => {
                     return;
                 }
                 vuexContext.commit("setToken", token);
+                return axios.get(process.env.baseUrl + "/DataAdmin/" + Cookie.get("uid") + "/DataArtikel.json")
+                    .then(res => {
+                        const postsArray = []
+                        for (const key in res.data) {
+                            postsArray.push({ ...res.data[key], id: key })
+                        }
+                        vuexContext.commit('setPostsAdmin', postsArray)
+                    })
+                    .catch(e => context.error(e))
 
 
             },
@@ -132,7 +201,12 @@ const createStore = () => {
 
         },
         getters: {
-
+            loadedPosts(state) {
+                return state.loadedPosts;
+            },
+            loadedPostsAdmin(state) {
+                return state.loadedPostsAdmin;
+            },
             isAuth(state) {
                 return state.token != null;
             },

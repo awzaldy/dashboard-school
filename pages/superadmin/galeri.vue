@@ -9,6 +9,7 @@
 <script>
 export default {
 layout: "super-admin-layout",
+middleware: ["check-auth", "auth"],
 }
 </script>
 

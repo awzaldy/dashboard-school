@@ -11,6 +11,7 @@
 import TambahAdminForm from '@/components/SuperAdmin/TambahAdminForm.vue'
 export default {
   layout: "super-admin-layout",
+  middleware: ["check-auth", "auth"],
   components:{
     TambahAdminForm
   }

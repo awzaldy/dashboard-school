@@ -51,9 +51,6 @@
             </base-button>
           </div>
         </form>
-        <card class="mt-3" header="Form Data Result">
-          <pre class="m-0">{{ formAdmin }}</pre>
-        </card>
       </div>
     </template>
   </card>

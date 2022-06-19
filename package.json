@@ -1,8 +1,8 @@
 {
-  "name": "nuxt-black-dashboard",
+  "name": "dashboard-school-enterbiner",
   "version": "1.0.0",
-  "description": "Nuxt Black Dashboard",
-  "author": "creativetim",
+  "description": "Dashboard School Enterbiner",
+  "author": "Enterbiner Creative",
   "private": true,
   "scripts": {
     "dev": "nuxt",
@@ -15,6 +15,7 @@
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/pwa": "^3.0.0-beta.16",
     "bootstrap": "4.3.1",
+    "bootstrap-vue": "^2.22.0",
     "chart.js": "^2.7.1",
     "d3": "^5.7.0",
     "element-ui": "^2.11.1",

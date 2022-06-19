@@ -40,16 +40,6 @@
                   style="max-height: 600px; max-width: 400px"
                 />
               </div>
-
-              <base-button
-                type=""
-                class="btn-fill"
-                v-if="file_gambar"
-                :ref="file_gambar"
-                @click="uploadImageFile()"
-              >
-                Upload gambar
-              </base-button>
             </div>
 
             <div class="col-md-12">
@@ -57,33 +47,58 @@
                 <VueEditor
                   :editorOptions="editorSettings"
                   useCustomImageHandler
-                  @imageAdded="handleImageAdded"
+                  @image-added="handleImageAdded"
                   v-model="form.deskripsi_artikel"
                 />
               </client-only>
             </div>
             <div class="col-md-12 mt-4 mb-4">
-              <base-button type="info" class="btn-fill">
+              <base-button type="info" class="btn-fill" @click="onSubmit">
                 Tambahkan
               </base-button>
             </div>
-            <div class="col-md-12">
-              <div class="progress">
-                <div
-                  class="progress-bar"
-                  role="progressbar"
-                  :aria-valuenow="uploadValue"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                >
-                  {{ uploadValue }}%
+            <ul class="navbar-nav ml-auto">
+              <modal
+                :show.sync="searchModalVisible"
+                class="modal"
+                :centered="false"
+                :show-close="true"
+              >
+                <div class="mx-auto">
+                  <div class="row">
+                    <div class="col-md-10">
+                      <p style="font-size: 25px">
+                        Artikel Berhasil Ditambahkan
+                      </p>
+                    </div>
+                    <div class="col-md-2">
+                      <img
+                        src="@/assets/img/check-mark-verified.gif"
+                        alt="Computer man"
+                        style="width: 48px; height: 48px"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    Kembali ke halaman utama dalam
+                    {{ countDown }} detik
+                  </div>
                 </div>
-              </div>
+              </modal>
+            </ul>
+
+            <div class="col-md-12 mb-3 mt-3">
+              <b-progress
+                height="1rem"
+                :value="uploadValue"
+                v-if="uploadSemua"
+                max="100"
+                variant ="info"
+                show-progress
+                animated
+              ></b-progress>
             </div>
           </form>
-          <card class="mt-3" header="Form Data Result">
-            <pre class="m-0">{{ form }}</pre>
-          </card>
         </div>
       </template>
     </card>
@@ -92,14 +107,19 @@
 
 <script>
 import { storeFile } from "@/plugins/firebase.js";
+import { Modal } from "@/components";
 import "firebase/storage";
 import "firebase/compat/storage";
 import axios from "axios";
-import moment from "moment";
+import moment, { now } from "moment";
+import Cookie from "js-cookie";
 export default {
+  components: { Modal },
   middleware: ["check-auth", "auth"],
   data() {
     return {
+      countDown: 3,
+      interval: null,
       editorSettings: {
         modules: {
           imageDrop: true,
@@ -107,25 +127,37 @@ export default {
         },
         theme: "snow",
       },
+      searchModalVisible: false,
       file_gambar: null,
       url: null,
       blog: {},
       isUploadingImage: false,
       isDeletingImage: false,
       value: "",
-      uploadValue: "75",
+      uploadValue: "",
+      uploadSemua: false,
       form: {
         id: "",
         judul_artikel: "",
         gambar_artikel: "",
         tanggal_terbit: "",
+        jam_terbit: "",
         nama_admin: "",
+        jabatan: "",
         deskripsi_artikel: "",
         gambar_deskripsi: [],
       },
     };
   },
   methods: {
+    countDownTimer() {
+      if (this.countDown > 0) {
+        setTimeout(() => {
+          this.countDown -= 1;
+          this.countDownTimer();
+        }, 1000);
+      }
+    },
     handleImageAdded: function (file, Editor, cursorLocation, resetUploader) {
       // An example of using FormData
       // NOTE: Your key could be different such as:
@@ -144,9 +176,14 @@ export default {
 
       this.isUploadingImage = true;
 
+      const judul = this.form.judul_artikel;
       // Create a reference to the destination where we're uploading
       // the file.
-      const imageRef = storeFile.ref(`images/Deskripsi/${file.name}`);
+      let nowDate = moment().format("MM|Do-MMMM-YYYY");
+      let year = moment().format("YYYY");
+      const imageRef = storeFile.ref(
+        `artikel/${year}/bulan|${nowDate}/${judul}/DeskripsiGambar/${file.name}`
+      );
 
       const uploadTask = imageRef
         .put(file, metadata)
@@ -168,8 +205,8 @@ export default {
       uploadTask.then((url) => {
         let url_string = url.toString();
         let url_imagekit = url_string.replace(
-          "https://firebasestorage.googleapis.com/v0/b/myfundaction-4d946.appspot.com/",
-          "https://ik.imagekit.io/enterbinertesting/"
+          "https://firebasestorage.googleapis.com/v0/b/dashboard-school-5b47d.appspot.com/",
+          "https://ik.imagekit.io/enterbiner/"
         );
         this.blog.imageUrl = url_imagekit;
         this.form.gambar_deskripsi = url_imagekit;
@@ -189,6 +226,15 @@ export default {
       this.$refs.imageFile.click();
     },
     uploadImageFile() {
+      // When the upload ends, set the value of the blog image URL
+      // and signal that uploading is done.
+    },
+    onResetData() {
+      this.uploadValue = "";
+    },
+
+    onSubmit() {
+      this.uploadSemua = true;
       const file = this.file_gambar;
 
       if (!file.type.match("image.*")) {
@@ -204,9 +250,15 @@ export default {
 
       // Create a reference to the destination where we're uploading
       // the file.
-
+      const judul = this.form.judul_artikel;
+      let nowDate = moment().format("Do-MMMM-YYYY");
+      let bulan_no = moment().format("MM");
+      let bulan = moment().format("MMMM");
+      let year = moment().format("YYYY");
       const imageRef = storeFile
-        .ref(`images/main/${file.name}`)
+        .ref(
+          `artikel/${year}/Bulan|${bulan_no}|${bulan}/${nowDate}/${judul}/ArtikelGambar/${file.name}`
+        )
         .put(file, metadata);
 
       imageRef.on(
@@ -221,23 +273,37 @@ export default {
         () => {
           this.uploadValue = 100;
           imageRef.snapshot.ref.getDownloadURL().then((url) => {
+            let tanggalTerbit = moment().format("Do MMMM YYYY");
+            let jamTerbit = moment().format("H:mm:ss");
+            let nama_admin_cookie = Cookie.get("nama");
+            let jabatan_cookie = Cookie.get("jabatan");
             let url_string = url.toString();
             let url_imagekit = url_string.replace(
-              "https://ik.imagekit.io/enterbinertesting/"
+              "https://firebasestorage.googleapis.com/v0/b/dashboard-school-5b47d.appspot.com",
+              "https://ik.imagekit.io/enterbiner/"
             );
+
             this.url = url_imagekit;
             this.blog.imageUrl = url_imagekit;
-            this.form.gambar = url_imagekit;
-            console.log(this.form.gambar);
+            this.form.nama_admin = nama_admin_cookie;
+            this.form.jabatan = jabatan_cookie;
+            this.form.tanggal_terbit = tanggalTerbit;
+            this.form.jam_terbit = jamTerbit;
+            this.form.gambar_artikel = url_imagekit;
+            this.$store.dispatch("addPosts", this.form);
+            this.$store.dispatch("addPostsAdmin", this.form);
             this.isUploadingImage = false;
+            this.searchModalVisible = true;
+            this.countDownTimer();
+            this.interval = setTimeout(
+              function () {
+                this.$router.push({ path: "/artikel" });
+              }.bind(this),
+              5000
+            );
           });
         }
       );
-      // When the upload ends, set the value of the blog image URL
-      // and signal that uploading is done.
-    },
-    onResetData() {
-      this.uploadValue = "";
     },
   },
 };
