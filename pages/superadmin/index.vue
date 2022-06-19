@@ -5,17 +5,13 @@
     </card>
   </div>
 </template>
+
 <script>
 export default {
-  name: "dashboard",
+  layout: "super-admin-layout",
   middleware: ["check-auth", "auth"],
-  components: {},
-  data() {
-    return {};
-  },
-  computed: {},
-  methods: {},
-  mounted() {},
 };
 </script>
-<style></style>
+
+<style>
+</style>

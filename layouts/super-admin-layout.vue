@@ -3,50 +3,66 @@
     <notifications></notifications>
     <side-bar
       :background-color="sidebarBackground"
-      :short-title="'sidebar.shortTitle'"
-      :title="'sidebar.title'"
+      :short-title="'TES'"
+      :title="'SMPN 24'"
     >
       <template slot="links">
         <sidebar-item
           :link="{
             name: 'Dashboard',
             icon: 'tim-icons icon-chart-pie-36',
-            path: '/',
+            path: '/superadmin',
           }"
         >
         </sidebar-item>
         <sidebar-item
           :link="{
-            name: 'Informasi',
+            name: 'Data Admin',
+            icon: 'tim-icons icon-badge',
+            path: '/superadmin/dataAdmin',
+          }"
+        >
+        </sidebar-item>
+        <sidebar-item
+          :link="{
+            name: 'Data Informasi',
             icon: 'tim-icons icon-notes',
-            path: '/info',
+            path: '/superadmin/dataInformasi',
           }"
         >
         </sidebar-item>
         <sidebar-item
           :link="{
-            name: 'Agenda',
+            name: 'Data Agenda',
             icon: 'tim-icons icon-calendar-60',
-            path: '/agenda',
+            path: '/superadmin/dataAgenda',
           }"
         >
         </sidebar-item>
-
         <sidebar-item
           :link="{
-            name: 'Artikel',
+            name: 'Data Artikel',
             icon: 'tim-icons icon-paper',
-            path: '/artikel',
+            path: '/superadmin/dataArtikel',
+          }"
+        >
+        </sidebar-item>
+        <sidebar-item
+          :link="{
+            name: 'Galeri',
+            icon: 'tim-icons icon-image-02',
+            path: '/superadmin/galeri',
           }"
         >
         </sidebar-item>
 
-        <li class="mt-5">
+        <li class="active-pro">
           <a
             href="https://www.creative-tim.com/product/nuxt-black-dashboard-pro"
             target="_blank"
           >
-            <p>{{admin}}</p>
+            <i class="tim-icons icon-spaceship"></i>
+            <p>Upgrade to PRO</p>
           </a>
         </li>
       </template>
@@ -54,7 +70,7 @@
     <!--Share plugin (for demo purposes). You can remove it if don't plan on using it-->
     <sidebar-share :background-color.sync="sidebarBackground"> </sidebar-share>
     <div class="main-panel" :data="sidebarBackground">
-      <dashboard-navbar></dashboard-navbar>
+      <dashboard-navbar-super-admin></dashboard-navbar-super-admin>
       <router-view name="header"></router-view>
 
       <div :class="{ content: !isFullScreenRoute }" @click="toggleSidebar">
@@ -69,7 +85,6 @@
 </template>
 <script>
 /* eslint-disable no-new */
-import Cookie from "js-cookie";
 import PerfectScrollbar from "perfect-scrollbar";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
 import SidebarShare from "@/components/Layout/SidebarSharePlugin";
@@ -88,6 +103,7 @@ function initScrollbar(className) {
   }
 }
 
+import DashboardNavbarSuperAdmin from "@/components/Layout/DashboardNavbarSuperAdmin.vue";
 import DashboardNavbar from "@/components/Layout/DashboardNavbar.vue";
 import ContentFooter from "@/components/Layout/ContentFooter.vue";
 import DashboardContent from "@/components/Layout/Content.vue";
@@ -95,6 +111,7 @@ import { SlideYDownTransition, ZoomCenterTransition } from "vue2-transitions";
 
 export default {
   components: {
+    DashboardNavbarSuperAdmin,
     DashboardNavbar,
     ContentFooter,
     DashboardContent,
@@ -104,8 +121,7 @@ export default {
   },
   data() {
     return {
-      admin:"",
-      sidebarBackground: "vue", //vue|blue|orange|green|red|primary
+      sidebarBackground: "blue", //vue|blue|orange|green|red|primary
     };
   },
   computed: {
@@ -136,10 +152,6 @@ export default {
   },
   mounted() {
     this.initScrollbar();
-  },
-  async beforeMount() {
-    let cookieadmin = Cookie.get("nama");
-    this.admin = cookieadmin;
   },
 };
 </script>
