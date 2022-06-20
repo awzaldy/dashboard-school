@@ -7,7 +7,11 @@
           Tambahkan Artikel
         </base-button>
       </nuxt-link>
-      <table-artikel :content="loadedPostAdmin"></table-artikel>
+
+      <table-artikel
+        :content="loadedPostAdmin"
+        @hapus="onHapus"
+      ></table-artikel>
     </card>
   </div>
 </template>
@@ -16,7 +20,7 @@
 import axios from "axios";
 import Cookie from "js-cookie";
 import { Table, TableColumn } from "element-ui";
-import TableArtikel from '~/components/TableArtikel.vue';
+import TableArtikel from "~/components/TableArtikel.vue";
 export default {
   middleware: ["check-auth", "auth"],
   components: {
@@ -24,7 +28,17 @@ export default {
     [Table.name]: Table,
     [TableColumn.name]: TableColumn,
   },
+  methods: {
+    async onHapus(id) {
+      await this.$store.dispatch("deletePost", id);
+      await this.$store.dispatch("deletePostAdmin", id);
+      await this.$router.go(0);
+    },
+  },
   computed: {
+    loadedPost() {
+      return this.$store.getters.loadedPosts;
+    },
     loadedPostAdmin() {
       return this.$store.getters.loadedPostsAdmin;
     },

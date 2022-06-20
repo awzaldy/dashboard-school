@@ -1,14 +1,14 @@
 <template>
   <div>
-    <tambah-artikel-form @submit="onSimpan"></tambah-artikel-form>
+    <tambah-info-form></tambah-info-form>
   </div>
 </template>
 
 <script>
-import TambahArtikelForm from "~/components/TambahArtikelForm.vue";
+import TambahInfoForm from "~/components/TambahInfoForm.vue";
 
 export default {
-  components: { TambahArtikelForm },
+  components: { TambahInfoForm },
   middleware: ["check-auth", "auth"],
   data() {
     return {};

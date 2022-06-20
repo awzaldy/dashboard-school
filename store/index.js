@@ -36,6 +36,18 @@ const createStore = () => {
             addPostsAdmin(state, post) {
                 state.loadedPostsAdmin.push(post);
             },
+            deletePost(state, deletePost) {
+                const postIndex = state.loadedPosts.findIndex(
+                    post => post.id === deletePost.id
+                );
+                state.loadedPosts.splice(postIndex, 1);
+            },
+            deletePostAdmin(state, deletePost) {
+                const postIndex = state.loadedPostsAdmin.findIndex(
+                    post => post.id === deletePost.id
+                );
+                state.loadedPostsAdmin.splice(postIndex, 1);
+            },
             setToken(state, token) {
                 state.token = token;
             },
@@ -89,28 +101,44 @@ const createStore = () => {
                             process.env.baseUrl + "/DataArtikel.json",
                             post
                         )
-                        .then((result) =>
-                            vuexContext.commit('addPosts', { ...post, id: result.data.name })
-
+                        .then((result) => {
+                            Cookie.set("artikelID", result.data.name);
+                            console.log(result.data.name);
+                            vuexContext.commit('addPosts', { ...post, id: result.data.name, });
+                            axios
+                                .put(
+                                    process.env.baseUrl + "/DataAdmin/" + Cookie.get("uid") + "/DataArtikel/" + Cookie.get("artikelID") + ".json",
+                                    post
+                                )
+                                .then((result) => {
+                                    vuexContext.commit('addPostsAdmin', { ...post, id: result.data.name });
+                                }
+                                )
+                                .catch((e) => console.log(e))
+                        }
                         )
                         .catch((e) => console.log(e)),
                 ])
+
+
 
             },
-            addPostsAdmin(vuexContext, post) {
+            deletePost(vuexContext, deletePost) {
+                return axios.delete(process.env.baseUrl + "/DataArtikel/" + deletePost.id +
+                    ".json", deletePost)
+                    .then(res => {
+                        vuexContext.commit('deletePost', deletePost)
+                    })
+                    .catch(e => console.log(e))
 
-                return axios.all([
-                    axios
-                        .post(
-                            process.env.baseUrl + "/DataAdmin/" + Cookie.get("uid") + "/DataArtikel.json",
-                            post
-                        )
-                        .then((result) =>
-                            vuexContext.commit('addPostsAdmin', { ...post, id: result.data.name })
-
-                        )
-                        .catch((e) => console.log(e)),
-                ])
+            },
+            deletePostAdmin(vuexContext, deletePost) {
+                return axios.delete(process.env.baseUrl + "/DataAdmin/" + Cookie.get("uid") + "/DataArtikel/" + deletePost.id +
+                    ".json", deletePost)
+                    .then(res => {
+                        vuexContext.commit('deletePost', deletePost)
+                    })
+                    .catch(e => console.log(e))
 
             },
             authAdmin(vuexContext, authData) {
