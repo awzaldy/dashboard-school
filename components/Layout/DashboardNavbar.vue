@@ -58,7 +58,7 @@
       >
         <template slot="title">
           <div class="photo">
-            <img src="img/icons/Tes-Icon-Logo-EB-Blue.png" />
+            <img src="~assets/img/icon_anak_smp.png" />
           </div>
           <b class="caret d-none d-lg-block d-xl-block"></b>
           <p class="d-lg-none">Log out</p>

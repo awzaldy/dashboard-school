@@ -3,10 +3,10 @@
     <div class="sidebar-wrapper" ref="sidebarScrollArea">
       <div class="logo">
         <a href="http://www.creative-tim.com" class="simple-text logo-mini">
-          <img src="~assets/img/Tes-Icon-Logo-EB-Blue.png" alt="app-logo" />
+          <img src="~assets/img/icon_anak_smp.png" alt="app-logo" />
         </a>
         <a href="http://www.creative-tim.com" class="simple-text logo-normal">
-          Enterbiner Creative
+          SMPN 24 Gresik
         </a>
       </div>
       <slot></slot>

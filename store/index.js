@@ -9,6 +9,8 @@ const createStore = () => {
             admin: [],
             loadedPosts: [],
             loadedPostsAdmin: [],
+            loadedInformasi: [],
+            loadedInformasiAdmin: [],
             uid: "",
 
 
@@ -27,14 +29,23 @@ const createStore = () => {
             setPostsAdmin(state, posts) {
                 state.loadedPostsAdmin = posts;
             },
+            setPosts(state, posts) {
+                state.loadedInformasi = posts;
+            },
             addAdmin(state, admindata) {
                 state.admin.push(admindata);
             },
             addPosts(state, post) {
                 state.loadedPosts.push(post);
             },
+            addInformasi(state, post) {
+                state.loadedInformasi.push(post);
+            },
             addPostsAdmin(state, post) {
                 state.loadedPostsAdmin.push(post);
+            },
+            addInformasiAdmin(state, post) {
+                state.loadedInformasiAdmin.push(post);
             },
             deletePost(state, deletePost) {
                 const postIndex = state.loadedPosts.findIndex(
@@ -47,6 +58,18 @@ const createStore = () => {
                     post => post.id === deletePost.id
                 );
                 state.loadedPostsAdmin.splice(postIndex, 1);
+            },
+            deleteInformasi(state, deletePost) {
+                const postIndex = state.loadedInformasi.findIndex(
+                    post => post.id === deletePost.id
+                );
+                state.loadedInformasi.splice(postIndex, 1);
+            },
+            deleteInformasiAdmin(state, deletePost) {
+                const postIndex = state.loadedInformasiAdmin.findIndex(
+                    post => post.id === deletePost.id
+                );
+                state.loadedInformasiAdmin.splice(postIndex, 1);
             },
             setToken(state, token) {
                 state.token = token;
@@ -123,6 +146,34 @@ const createStore = () => {
 
 
             },
+            addInformasi(vuexContext, post) {
+
+                return axios.all([
+                    axios
+                        .post(
+                            process.env.baseUrl + "/DataInformasi.json",
+                            post
+                        )
+                        .then((result) => {
+                            Cookie.set("informasiID", result.data.name);
+                            console.log(result.data.name);
+                            vuexContext.commit('addInformasi', { ...post, id: result.data.name, });
+                            axios
+                                .put(
+                                    process.env.baseUrl + "/DataAdmin/" + Cookie.get("uid") + "/DataInformasi/" + Cookie.get("informasiID") + ".json",
+                                    post
+                                )
+                                .then((result) => {
+                                    vuexContext.commit('addInformasiAdmin', { ...post, id: result.data.name });
+                                }
+                                )
+                                .catch((e) => console.log(e))
+                        }
+                        )
+                        .catch((e) => console.log(e)),
+                ])
+
+            },
             deletePost(vuexContext, deletePost) {
                 return axios.delete(process.env.baseUrl + "/DataArtikel/" + deletePost.id +
                     ".json", deletePost)
@@ -137,6 +188,24 @@ const createStore = () => {
                     ".json", deletePost)
                     .then(res => {
                         vuexContext.commit('deletePost', deletePost)
+                    })
+                    .catch(e => console.log(e))
+
+            },
+            deleteInformasi(vuexContext, deletePost) {
+                return axios.delete(process.env.baseUrl + "/DataInformasi/" + deletePost.id +
+                    ".json", deletePost)
+                    .then(res => {
+                        vuexContext.commit('deleteInformasi', deletePost)
+                    })
+                    .catch(e => console.log(e))
+
+            },
+            deleteInformasiAdmin(vuexContext, deletePost) {
+                return axios.delete(process.env.baseUrl + "/DataAdmin/" + Cookie.get("uid") + "/DataInformasi/" + deletePost.id +
+                    ".json", deletePost)
+                    .then(res => {
+                        vuexContext.commit('deleteInformasiAdmin', deletePost)
                     })
                     .catch(e => console.log(e))
 
@@ -234,6 +303,12 @@ const createStore = () => {
             },
             loadedPostsAdmin(state) {
                 return state.loadedPostsAdmin;
+            },
+            loadedInformasi(state) {
+                return state.loadedInformasi;
+            },
+            loadedInformasiAdmin(state) {
+                return state.loadedInformasiAdmin;
             },
             isAuth(state) {
                 return state.token != null;
