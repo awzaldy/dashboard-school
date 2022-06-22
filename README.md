@@ -1,3 +1,8 @@
+# nuxt-school
+
+## Build Setup
+
+```bash
 # install dependencies
 $ npm install
 
@@ -10,4 +15,6 @@ $ npm run start
 
 # generate static project
 $ npm run generate
-For detailed explanation on how things work, check out the documentatio
+```
+
+For detailed explanation on how things work, check out the [documentation](https://nuxtjs.org).
