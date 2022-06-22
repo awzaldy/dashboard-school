@@ -1,4 +1,4 @@
-# nuxt-school
+# dashboard-school Enterbiner
 
 ## Build Setup
 
