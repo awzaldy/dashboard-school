@@ -2,11 +2,11 @@
   <card>
     <div class="row">
       <div class="col-lg-6">
-        <img src="img/bg1.jpg" alt="" />
+        <img src="img/gal1.jpeg" alt="" />
       </div>
       <div class="col-lg-6">
         <div class="col-md-12">
-          <h3 slot="header" class="title">Enterbiner Creative</h3>
+          <h3 slot="header" class="title">SMPN 24 Gresik</h3>
         </div>
         <form @submit.prevent="updateProfile">
           <div class="col-md-12">
