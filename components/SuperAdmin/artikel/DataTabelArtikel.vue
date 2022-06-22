@@ -35,7 +35,7 @@
         </base-button>
         <b-modal :id="'bv-modal-hapus-' + data.value" hide-footer>
           <template #modal-title>
-            Apakah Anda Yakin Akan Menghapus Artikel Ini?
+            Apakah Anda Yakin Akan Menghapus Data Penggalangan?
           </template>
 
           <b-row>
@@ -59,14 +59,6 @@
             </b-col>
           </b-row>
         </b-modal>
-      </template>
-      <template #cell(id)="data" v-else>
-        <nuxt-link :to="`/admin-area/admin-penggalangan-data/${data.value}`">
-          <base-button type="info" class="btn-fill">
-            <i class="tim-icons icon-paper"></i>
-            {{ data.value }}
-          </base-button>
-        </nuxt-link>
       </template>
     </b-table>
   </div>

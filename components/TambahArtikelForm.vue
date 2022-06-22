@@ -6,99 +6,107 @@
           <div class="col-md-12">
             <h3 slot="header" class="title">Tambah Artikel</h3>
           </div>
-            <form @submit.prevent="updateProfile">
-                <div class="col-md-12">
-                <base-input
-                    type="text"
-                    v-model="form.judul_artikel"
-                    label="Judul Artikel"
-                >
-                </base-input>
+          <form @submit.prevent="updateProfile">
+            <div class="col-md-12">
+              <base-input
+                type="text"
+                v-model="form.judul_artikel"
+                label="Judul Artikel"
+              >
+              </base-input>
+            </div>
+            <div class="col-md-12">
+              <base-input
+                type="text"
+                v-model="form.headline_artikel"
+                label="Headline Artikel (Maksimal 2 kalimat)"
+              >
+              </base-input>
+            </div>
+            <div class="col-md-12">
+              <label> Gambar Artikel </label>
+              <div class="input-group mb-3">
+                <div class="custom-file">
+                  <input
+                    type="file"
+                    class="custom-file-input"
+                    id="inputGroupFile04"
+                    @click="onResetData"
+                    @change.prevent="onFileChange"
+                  />
+                  <label class="custom-file-label" for="inputGroupFile04"
+                    >Pilih Gambar</label
+                  >
                 </div>
-                <div class="col-md-12">
-                <label> Gambar Artikel </label>
-                <div class="input-group mb-3">
-                    <div class="custom-file">
-                    <input
-                        type="file"
-                        class="custom-file-input"
-                        id="inputGroupFile04"
-                        @click="onResetData"
-                        @change.prevent="onFileChange"
-                    />
-                    <label class="custom-file-label" for="inputGroupFile04"
-                        >Pilih Gambar</label
-                    >
-                    </div>
-                </div>
-                </div>
-                <div class="col-md-12">
-                <div class="mb-3" id="preview">
-                    <img
-                    v-if="url"
-                    :src="url"
-                    style="max-height: 600px; max-width: 400px"
-                    />
-                </div>
-                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="mb-3" id="preview">
+                <img
+                  v-if="url"
+                  :src="url"
+                  style="max-height: 600px; max-width: 400px"
+                />
+              </div>
+            </div>
 
-                <div class="col-md-12">
-                <client-only>
-                    <VueEditor
-                    :editorOptions="editorSettings"
-                    useCustomImageHandler
-                    @image-added="handleImageAdded"
-                    v-model="form.deskripsi_artikel"
-                    />
-                </client-only>
+            <div class="col-md-12">
+              <client-only>
+                <VueEditor
+                  :editorOptions="editorSettings"
+                  useCustomImageHandler
+                  @image-added="handleImageAdded"
+                  v-model="form.deskripsi_artikel"
+                />
+              </client-only>
+            </div>
+            <div class="col-md-12 mt-4 mb-4">
+              <base-button type="info" class="btn-fill" @click="onSubmit">
+                Tambahkan
+              </base-button>
+            </div>
+            <ul class="navbar-nav ml-auto">
+              <modal
+                :show.sync="searchModalVisible"
+                class="modal"
+                :centered="false"
+                :show-close="true"
+              >
+                <div class="mx-auto">
+                  <div class="row">
+                    <div class="col-md-10">
+                      <p style="font-size: 25px">
+                        Artikel Berhasil Ditambahkan
+                      </p>
+                    </div>
+                    <div class="col-md-2">
+                      <img
+                        src="@/assets/img/check-mark-verified.gif"
+                        alt="Computer man"
+                        style="width: 48px; height: 48px"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    Kembali ke halaman utama dalam
+                    {{ countDown }} detik
+                  </div>
                 </div>
-                <div class="col-md-12 mt-4 mb-4">
-                <base-button type="info" class="btn-fill" @click="onSubmit">
-                    Tambahkan
-                </base-button>
-                </div>
-                <ul class="navbar-nav ml-auto">
-                <modal
-                    :show.sync="searchModalVisible"
-                    class="modal"
-                    :centered="false"
-                    :show-close="true"
-                >
-                    <div class="mx-auto">
-                    <div class="row">
-                        <div class="col-md-10">
-                        <p style="font-size: 25px">
-                            Artikel Berhasil Ditambahkan
-                        </p>
-                        </div>
-                        <div class="col-md-2">
-                        <img
-                            src="@/assets/img/check-mark-verified.gif"
-                            alt="Computer man"
-                            style="width: 48px; height: 48px"
-                        />
-                        </div>
-                    </div>
-                    <div>
-                        Kembali ke halaman utama dalam
-                        {{ countDown }} detik
-                    </div>
-                    </div>
-                </modal>
-                </ul>
+              </modal>
+            </ul>
 
-                <div class="col-md-12 mb-3 mt-3">
-                <b-progress
-                    height="1rem"
-                    :value="uploadValue"
-                    v-if="uploadSemua"
-                    max="100"
-                    variant ="info"
-                    show-progress
-                    animated
-                ></b-progress>
-                </div>
-            </form>
+            <div class="col-md-12 mb-3 mt-3">
+              <b-progress
+                height="1rem"
+                :value="uploadValue"
+                v-if="uploadSemua"
+                max="100"
+                variant="info"
+                show-progress
+                animated
+              ></b-progress>
+            </div>
+          </form>
         </div>
       </template>
     </card>
@@ -139,6 +147,7 @@ export default {
       form: {
         id: "",
         judul_artikel: "",
+        headline_artikel: "",
         gambar_artikel: "",
         tanggal_terbit: "",
         jam_terbit: "",

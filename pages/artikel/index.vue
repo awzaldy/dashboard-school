@@ -8,10 +8,39 @@
         </base-button>
       </nuxt-link>
 
-      <table-artikel
-        :content="loadedPostAdmin"
-        @hapus="onHapus"
-      ></table-artikel>
+      <card>
+        <base-button
+          type="success"
+          class="btn-fill mb-4"
+          @click="artikel = true"
+        >
+          Semua Artikel
+        </base-button>
+
+        <base-button
+          type="success"
+          class="btn-fill mb-4"
+          @click="artikelAnda()"
+        >
+          Artikel Anda
+        </base-button>
+
+        <div class="col-md-12" v-if="artikel">
+          <h4 slot="header" class="card-title mb-3">Semua Artikel</h4>
+          <table-artikel-semua
+            :content="loadedPost"
+            @hapus="onHapus"
+          ></table-artikel-semua>
+        </div>
+
+        <div class="col-md-12" v-else>
+          <h4 slot="header" class="card-title mb-3">Artikel Anda</h4>
+          <table-artikel
+            :content="loadedPostAdmin"
+            @hapus="onHapus"
+          ></table-artikel>
+        </div>
+      </card>
     </card>
   </div>
 </template>
@@ -21,18 +50,28 @@ import axios from "axios";
 import Cookie from "js-cookie";
 import { Table, TableColumn } from "element-ui";
 import TableArtikel from "~/components/TableArtikel.vue";
+import TableArtikelSemua from "~/components/TableArtikel-Semua.vue";
 export default {
   middleware: ["check-auth", "auth"],
   components: {
+    TableArtikelSemua,
     TableArtikel,
     [Table.name]: Table,
     [TableColumn.name]: TableColumn,
+  },
+  data() {
+    return {
+      artikel: true,
+    };
   },
   methods: {
     async onHapus(id) {
       await this.$store.dispatch("deletePost", id);
       await this.$store.dispatch("deletePostAdmin", id);
-      await this.$router.go(0);
+      //await this.$router.go(0);
+    },
+    artikelAnda() {
+      this.artikel = false;
     },
   },
   computed: {
