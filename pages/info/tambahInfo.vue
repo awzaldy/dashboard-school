@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import TambahInfoForm from "~/components/TambahInfoForm.vue";
+import TambahInfoForm from "~/components/02-Informasi/TambahInfoForm.vue";
 
 export default {
   components: { TambahInfoForm },

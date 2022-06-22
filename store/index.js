@@ -41,7 +41,7 @@ const createStore = () => {
             setInformasi(state, posts) {
                 state.loadedInformasi = posts;
             },
-            setInformasi(state, posts) {
+            setInformasiAdmin(state, posts) {
                 state.loadedInformasiAdmin = posts;
             },
 
@@ -414,15 +414,29 @@ const createStore = () => {
                     return;
                 }
                 vuexContext.commit("setToken", token);
-                return axios.get(process.env.baseUrl + "/DataAdmin/" + Cookie.get("uid") + "/DataArtikel.json")
-                    .then(res => {
-                        const postsArray = []
-                        for (const key in res.data) {
-                            postsArray.push({ ...res.data[key], id: key })
-                        }
-                        vuexContext.commit('setPostsAdmin', postsArray)
-                    })
-                    .catch(e => context.error(e))
+                return axios.all([
+                    axios.get(process.env.baseUrl + "/DataAdmin/" + Cookie.get("uid") + "/DataArtikel.json")
+                        .then(res => {
+                            const postsArray = []
+                            for (const key in res.data) {
+                                postsArray.push({ ...res.data[key], id: key })
+                            }
+                            vuexContext.commit('setPostsAdmin', postsArray)
+                        })
+                        .catch(e => context.error(e)),
+                    axios.get(process.env.baseUrl + "/DataAdmin/" + Cookie.get("uid") + "/DataInformasi.json")
+                        .then(res => {
+                            const postsArray = []
+                            for (const key in res.data) {
+                                postsArray.push({ ...res.data[key], id: key })
+                            }
+                            vuexContext.commit('setInformasiAdmin', postsArray)
+                        })
+                        .catch(e => context.error(e)),
+
+                ])
+
+
 
 
             },

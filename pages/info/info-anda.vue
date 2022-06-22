@@ -23,14 +23,17 @@
         <div class="col-md-12">
           <h4 slot="header" class="card-title mb-3">Semua Informasi</h4>
 
-          <table-info :content="loadedInformasi" @hapus="onHapus"></table-info>
+          <table-info
+            :content="loadedInformasiAdmin"
+            @hapus="onHapus"
+          ></table-info>
         </div>
       </card>
     </card>
   </div>
 </template>
 <script>
-import TableInfo from "~/components/02-Informasi/TableInfo-Semua.vue";
+import TableInfo from "~/components/02-Informasi/TableInfo.vue";
 export default {
   name: "dashboard",
   middleware: ["check-auth", "auth"],
@@ -40,16 +43,16 @@ export default {
   data() {
     return {};
   },
+  computed: {
+    loadedInformasiAdmin() {
+      return this.$store.getters.loadedInformasiAdmin;
+    },
+  },
   methods: {
     async onHapus(id) {
       await this.$store.dispatch("deleteInformasi", id);
       await this.$store.dispatch("deleteInformasiAdmin", id);
       //await this.$router.go(0);
-    },
-  },
-  computed: {
-    loadedInformasi() {
-      return this.$store.getters.loadedInformasi;
     },
   },
   mounted() {},

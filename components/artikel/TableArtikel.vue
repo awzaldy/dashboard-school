@@ -10,6 +10,8 @@
       :current-page="currentPage"
       :responsive="true"
       show-empty
+      :sort-direction="sortDirection"
+      :sort-desc.sync="sortDesc"
     >
       <template #cell(index)="data">
         {{ data.index + 1 }}
@@ -88,6 +90,8 @@ export default {
       perPage: 10,
       currentPage: 1,
       view: true,
+      sortDesc: true,
+      sortDirection: "desc",
       fields: [
         { key: "index", label: "No" },
 
@@ -96,6 +100,8 @@ export default {
         { key: "tanggal_terbit", label: "Tanggal Terbit" },
 
         { key: "jam_terbit", label: "Jam Terbit" },
+
+        { key: "nama_penulis", label: "Penulis" },
 
         { key: "nama_admin", label: "Admin" },
 

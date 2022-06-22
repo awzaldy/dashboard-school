@@ -21,11 +21,8 @@
         </nuxt-link>
 
         <div class="col-md-12">
-          <h4 slot="header" class="card-title mb-3">Semua Artikel</h4>
-          <table-artikel-semua
-            :content="loadedPost"
-            @hapus="onHapus"
-          ></table-artikel-semua>
+          <h4 slot="header" class="card-title mb-3">Artikel Anda</h4>
+          <table-artikel :content="loadedPostAdmin" @hapus="onHapus"></table-artikel>
         </div>
       </card>
     </card>
@@ -39,7 +36,6 @@ import { Table, TableColumn } from "element-ui";
 import TableArtikel from "~/components/artikel/TableArtikel.vue";
 import TableArtikelSemua from "~/components/artikel/TableArtikel-Semua.vue";
 export default {
-  scrollToTop: true,
   middleware: ["check-auth", "auth"],
   components: {
     TableArtikelSemua,
@@ -55,12 +51,6 @@ export default {
       await this.$store.dispatch("deletePost", id);
       await this.$store.dispatch("deletePostAdmin", id);
       //await this.$router.go(0);
-    },
-  },
-  mounted() {},
-  methods: {
-    moveUp() {
-      window.scrollTo(0, 0);
     },
   },
   computed: {

@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import TambahGaleri from "~/components/TambahGaleri.vue";
+import TambahGaleri from "~/components/04-Galeri/TambahGaleri.vue";
 export default {
   components: {
     TambahGaleri,

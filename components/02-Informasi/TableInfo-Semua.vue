@@ -17,7 +17,7 @@
       <template #cell(id)="data">
         <nuxt-link :to="`/admin-area/admin-penggalangan-data/${data.value}`">
           <base-button type="info" class="btn-fill">
-            <i class="tim-icons icon-paper"></i>
+            Lihat Artikel <i class="tim-icons icon-paper ml-2"></i>
           </base-button>
         </nuxt-link>
       </template>
@@ -44,13 +44,19 @@ export default {
       fields: [
         { key: "index", label: "No" },
 
-        { key: "judul_artikel", label: "Judul Artikel" },
+        { key: "judul_informasi", label: "Judul Informasi" },
 
-        { key: "tanggal_terbit", label: "Tanggal Terbit" },
+        { key: "tanggal_agenda_mulai", label: "Tanggal Agenda" },
 
-        { key: "jam_terbit", label: "Jam Terbit" },
+        { key: "waktu_agenda_mulai", label: "Agenda Mulai" },
 
-        { key: "nama_admin", label: "Admin" },
+        { key: "waktu_agenda_selesai", label: "Agenda Selesai" },
+
+        { key: "nama_admin", label: "Pembuat Agenda" },
+
+        { key: "tanggal_agenda_buat", label: "Tanggal Pembuatan Agenda" },
+
+        { key: "waktu_agenda_buat", label: "Waktu Pembuatan Agenda" },
 
         { key: "id", label: "Detail" },
 

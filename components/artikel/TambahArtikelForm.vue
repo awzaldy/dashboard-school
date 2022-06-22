@@ -4,6 +4,21 @@
       <template slot="header">
         <div class="col-lg-6">
           <div class="col-md-12">
+            <nuxt-link to="/artikel">
+              <p class="text-base md:text-sm text-green-500 font-bold mb-3">
+                &lt;
+                <a
+                  class="
+                    text-base
+                    md:text-sm
+                    font-bold
+                    no-underline
+                    hover:underline
+                  "
+                  >Kembali</a
+                >
+              </p>
+            </nuxt-link>
             <h3 slot="header" class="title">Tambah Artikel</h3>
           </div>
           <form @submit.prevent="updateProfile">
@@ -20,6 +35,22 @@
                 type="text"
                 v-model="form.headline_artikel"
                 label="Headline Artikel (Maksimal 2 kalimat)"
+              >
+              </base-input>
+            </div>
+            <div class="col-md-12">
+              <base-input
+                type="text"
+                v-model="form.nama_penulis"
+                label="Nama Penulis Artikel (Kosongkan apabila pemilik akun yang menerbitkan artikel)"
+              >
+              </base-input>
+            </div>
+            <div class="col-md-12">
+              <base-input
+                type="text"
+                v-model="form.jabatan_penulis"
+                label="Jabatan Penulis Artikel (Kosongkan apabila pemilik akun yang menerbitkan artikel)"
               >
               </base-input>
             </div>
@@ -94,6 +125,22 @@
                 </div>
               </modal>
             </ul>
+            <ul class="navbar-nav ml-auto">
+              <modal
+                :show.sync="peringatan_gambar"
+                class="modal"
+                :centered="false"
+                :show-close="true"
+              >
+                <div class="mx-auto">
+                  <div class="col-md-12">
+                    <p style="font-size: 20px">
+                      Harap mengisi data dengan lengkap!
+                    </p>
+                  </div>
+                </div>
+              </modal>
+            </ul>
 
             <div class="col-md-12 mb-3 mt-3">
               <b-progress
@@ -136,6 +183,7 @@ export default {
         theme: "snow",
       },
       searchModalVisible: false,
+      peringatan_gambar: false,
       file_gambar: null,
       url: null,
       blog: {},
@@ -148,6 +196,8 @@ export default {
         id: "",
         judul_artikel: "",
         headline_artikel: "",
+        nama_penulis: "",
+        jabatan_penulis: "",
         gambar_artikel: "",
         tanggal_terbit: "",
         jam_terbit: "",
@@ -244,74 +294,90 @@ export default {
 
     async onSubmit() {
       this.uploadSemua = true;
-      const file = this.file_gambar;
+      if (
+        this.file_gambar == null ||
+        this.form.judul_artikel == "" ||
+        this.form.headline_artikel == "" ||
+        this.form.deskripsi_artikel == ""
+      ) {
+        this.peringatan_gambar = true;
+      } else {
+        const file = this.file_gambar;
 
-      if (!file.type.match("image.*")) {
-        alert("Please upload an image.");
-        return;
-      }
-
-      const metadata = {
-        contentType: file.type,
-      };
-
-      this.isUploadingImage = true;
-
-      // Create a reference to the destination where we're uploading
-      // the file.
-      const judul = this.form.judul_artikel;
-      let nowDate = moment().format("Do-MMMM-YYYY");
-      let bulan_no = moment().format("MM");
-      let bulan = moment().format("MMMM");
-      let year = moment().format("YYYY");
-      const imageRef = storeFile
-        .ref(
-          `artikel/${year}/Bulan|${bulan_no}|${bulan}/${nowDate}/${judul}/ArtikelGambar/${file.name}`
-        )
-        .put(file, metadata);
-
-      imageRef.on(
-        `state_changed`,
-        (snapshot) => {
-          this.uploadValue =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        },
-        (error) => {
-          console.log(error.message);
-        },
-        () => {
-          this.uploadValue = 100;
-          imageRef.snapshot.ref.getDownloadURL().then((url) => {
-            let tanggalTerbit = moment().format("Do MMMM YYYY");
-            let jamTerbit = moment().format("H:mm:ss");
-            let nama_admin_cookie = Cookie.get("nama");
-            let jabatan_cookie = Cookie.get("jabatan");
-            let url_string = url.toString();
-            let url_imagekit = url_string.replace(
-              "https://firebasestorage.googleapis.com/v0/b/dashboard-school-5b47d.appspot.com",
-              "https://ik.imagekit.io/enterbiner/"
-            );
-
-            this.url = url_imagekit;
-            this.blog.imageUrl = url_imagekit;
-            this.form.nama_admin = nama_admin_cookie;
-            this.form.jabatan = jabatan_cookie;
-            this.form.tanggal_terbit = tanggalTerbit;
-            this.form.jam_terbit = jamTerbit;
-            this.form.gambar_artikel = url_imagekit;
-            this.$emit("submit", this.form);
-            this.isUploadingImage = false;
-            this.searchModalVisible = true;
-            this.countDownTimer();
-            this.interval = setTimeout(
-              function () {
-                this.$router.push({ path: "/artikel" });
-              }.bind(this),
-              5000
-            );
-          });
+        if (!file.type.match("image.*")) {
+          alert("Please upload an image.");
+          return;
         }
-      );
+
+        const metadata = {
+          contentType: file.type,
+        };
+
+        this.isUploadingImage = true;
+
+        // Create a reference to the destination where we're uploading
+        // the file.
+        const judul = this.form.judul_artikel;
+        let nowDate = moment().format("Do-MMMM-YYYY");
+        let bulan_no = moment().format("MM");
+        let bulan = moment().format("MMMM");
+        let year = moment().format("YYYY");
+        const imageRef = storeFile
+          .ref(
+            `artikel/${year}/Bulan|${bulan_no}|${bulan}/${nowDate}/${judul}/ArtikelGambar/${file.name}`
+          )
+          .put(file, metadata);
+
+        imageRef.on(
+          `state_changed`,
+          (snapshot) => {
+            this.uploadValue =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          },
+          (error) => {
+            console.log(error.message);
+          },
+          () => {
+            this.uploadValue = 100;
+            imageRef.snapshot.ref.getDownloadURL().then((url) => {
+              let tanggalTerbit = moment().format("Do MMMM YYYY");
+              let jamTerbit = moment().format("H:mm:ss");
+              let nama_admin_cookie = Cookie.get("nama");
+              let jabatan_cookie = Cookie.get("jabatan");
+              let url_string = url.toString();
+              let url_imagekit = url_string.replace(
+                "https://firebasestorage.googleapis.com/v0/b/dashboard-school-5b47d.appspot.com",
+                "https://ik.imagekit.io/enterbiner/"
+              );
+
+              this.url = url_imagekit;
+              this.blog.imageUrl = url_imagekit;
+              this.form.nama_admin = nama_admin_cookie;
+              this.form.jabatan = jabatan_cookie;
+              this.form.tanggal_terbit = tanggalTerbit;
+              this.form.jam_terbit = jamTerbit;
+              this.form.gambar_artikel = url_imagekit;
+              if (this.form.nama_penulis == "") {
+                this.form.nama_penulis = nama_admin_cookie;
+              }
+              if (this.form.jabatan_penulis == "") {
+                this.form.jabatan_penulis = jabatan_cookie;
+              }
+              this.$emit("submit", this.form);
+              this.isUploadingImage = false;
+
+              this.searchModalVisible = true;
+              this.countDownTimer();
+              this.interval = setTimeout(
+                function () {
+                  this.$router.go(-1);
+                }.bind(this),
+                5000
+              );
+            });
+          }
+        );
+      }
     },
   },
 };

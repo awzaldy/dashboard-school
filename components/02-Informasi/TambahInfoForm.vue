@@ -80,9 +80,6 @@
               </modal>
             </ul>
           </form>
-          <b-card class="mt-3" header="Form Data Result">
-            <pre class="m-0">{{ formInfo }}</pre>
-          </b-card>
         </div>
       </template>
     </card>

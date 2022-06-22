@@ -5,9 +5,10 @@
 </template>
 
 <script>
-import TambahArtikelForm from "~/components/TambahArtikelForm.vue";
+import TambahArtikelForm from "~/components/artikel/TambahArtikelForm.vue";
 
 export default {
+  scrollToTop: true,
   components: { TambahArtikelForm },
   middleware: ["check-auth", "auth"],
   data() {
