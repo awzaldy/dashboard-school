@@ -18,9 +18,9 @@
             </base-input>
           </div>
           <div class="col-md-12 mt-4">
-
-              <base-button type="info" class="btn-fill" @click="onSubmit"> Masuk </base-button>
-
+            <base-button type="info" class="btn-fill" @click="onSubmit">
+              Masuk
+            </base-button>
           </div>
         </form>
       </div>
@@ -53,9 +53,10 @@ export default {
             .then((res) => {
               let role = res.data.role;
               let nama = res.data.nama;
-              let jabatan = res.data.jabatan;
+               let jabatan = res.data.jabatan;
               Cookie.set("jabatan", jabatan);
               Cookie.set("nama", nama);
+
               if (role === "Admin") {
                 this.$router.push({ path: `/`, force: true });
               }

@@ -14,6 +14,8 @@ const createStore = () => {
             loadedGaleri: [],
             loadedGaleriAdmin: [],
             uid: "",
+            totalArtikel: "",
+            totalArtikelAdmin: "",
 
 
         },
@@ -36,6 +38,14 @@ const createStore = () => {
                 state.loadedPostsAdmin = posts;
             },
 
+
+            // set jumlah artikel
+            setTotalArtikel(state, posts) {
+                state.totalArtikel = posts;
+            },
+            setTotalArtikelAdmin(state, posts) {
+                state.totalArtikelAdmin = posts;
+            },
 
             // set informasi
             setInformasi(state, posts) {
@@ -66,6 +76,15 @@ const createStore = () => {
             },
             addPostsAdmin(state, post) {
                 state.loadedPostsAdmin.push(post);
+            },
+
+            // add jumlah total artikel
+
+            addTotalArtikel(state, post) {
+                state.totalArtikel.push(post);
+            },
+            addTotalArtikelAdmin(state, post) {
+                state.totalArtikelAdmin.push(post);
             },
 
             // add informasi
@@ -169,6 +188,11 @@ const createStore = () => {
                             vuexContext.commit('setGaleri', postsArray)
                         })
                         .catch(e => context.error(e)),
+                    axios.get(process.env.baseUrl + "/TotalArtikel.json")
+                        .then(res => {
+                            vuexContext.commit('setTotalArtikel', res.data)
+                        })
+                        .catch(e => context.error(e)),
                 ])
             },
 
@@ -218,6 +242,7 @@ const createStore = () => {
                                 )
                                 .then((result) => {
                                     vuexContext.commit('addPostsAdmin', { ...post, id: result.data.name });
+                                    Cookie.remove("artikelID");
                                 }
                                 )
                                 .catch((e) => console.log(e))
@@ -229,6 +254,40 @@ const createStore = () => {
 
 
             },
+
+
+            // add total artikel
+            addTotalArtikel(vuexContext, post) {
+                return axios.all([
+                    axios
+                        .put(
+                            process.env.baseUrl + "/TotalArtikel.json",
+                            post
+                        )
+                        .then((result) => {
+                            vuexContext.commit('setTotalArtikel', result.data);
+
+                        }
+                        )
+                        .catch((e) => console.log(e)),
+                ])
+
+            },
+
+            addTotalArtikelAdmin(vuexContext, post) {
+                return axios.all([axios
+                    .put(
+                        process.env.baseUrl + "/DataAdmin/" + Cookie.get("uid") + "/TotalArtikel.json",
+                        post
+                    )
+                    .then((result) => {
+                        vuexContext.commit('setTotalArtikelAdmin', result.data);
+                    }
+                    )
+                    .catch((e) => console.log(e)),
+                ])
+            },
+
 
             // add informasi ke firebase
             addInformasi(vuexContext, post) {
@@ -250,6 +309,7 @@ const createStore = () => {
                                 )
                                 .then((result) => {
                                     vuexContext.commit('addInformasiAdmin', { ...post, id: result.data.name });
+                                    Cookie.remove("informasiID");
                                 }
                                 )
                                 .catch((e) => console.log(e))
@@ -280,6 +340,7 @@ const createStore = () => {
                                 )
                                 .then((result) => {
                                     vuexContext.commit('addGaleriAdmin', { ...post, id: result.data.name });
+                                    Cookie.remove("galeriID");
                                 }
                                 )
                                 .catch((e) => console.log(e))
@@ -433,7 +494,11 @@ const createStore = () => {
                             vuexContext.commit('setInformasiAdmin', postsArray)
                         })
                         .catch(e => context.error(e)),
-
+                    axios.get(process.env.baseUrl + "/DataAdmin/" + Cookie.get("uid") + "TotalArtikel.json")
+                        .then(res => {
+                            vuexContext.commit('setTotalArtikelAdmin', res.data)
+                        })
+                        .catch(e => context.error(e)),
                 ])
 
 
@@ -446,6 +511,7 @@ const createStore = () => {
                 Cookie.remove("uid");
                 Cookie.remove("expirationDate");
                 Cookie.remove("nama");
+                Cookie.remove("jabatan");
                 if (process.client) {
                     localStorage.removeItem("token");
                     localStorage.removeItem("tokenExpiration");
@@ -462,6 +528,15 @@ const createStore = () => {
             },
             loadedPostsAdmin(state) {
                 return state.loadedPostsAdmin;
+            },
+
+            // getters untuk jumlah artikel
+
+            totalArtikel(state) {
+                return state.totalArtikel;
+            },
+            totalArtikelAdmin(state) {
+                return state.totalArtikelAdmin;
             },
 
             // getters untuk informasi

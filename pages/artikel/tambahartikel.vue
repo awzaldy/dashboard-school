@@ -1,6 +1,10 @@
 <template>
   <div>
-    <tambah-artikel-form @submit="onSimpan"></tambah-artikel-form>
+    <tambah-artikel-form
+      @submit="onSimpan"
+      :totalArtikel="totalArtikel"
+      :totalArtikelAdmin="totalArtikelAdmin"
+    ></tambah-artikel-form>
   </div>
 </template>
 
@@ -17,6 +21,14 @@ export default {
   methods: {
     async onSimpan(post) {
       await this.$store.dispatch("addPosts", post);
+    },
+  },
+  computed: {
+    totalArtikel() {
+      return this.$store.getters.totalArtikel;
+    },
+    totalArtikelAdmin() {
+      return this.$store.getters.totalArtikelAdmin;
     },
   },
 };

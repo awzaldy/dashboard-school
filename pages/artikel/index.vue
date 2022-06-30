@@ -22,10 +22,7 @@
 
         <div class="col-md-12">
           <h4 slot="header" class="card-title mb-3">Semua Artikel</h4>
-          <table-artikel-semua
-            :content="loadedPost"
-            @hapus="onHapus"
-          ></table-artikel-semua>
+          <table-artikel-semua :content="loadedPost"></table-artikel-semua>
         </div>
       </card>
     </card>

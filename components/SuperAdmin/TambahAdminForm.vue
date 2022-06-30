@@ -57,6 +57,8 @@
 </template>
 <script>
 export default {
+
+  
   data() {
     return {
       formAdmin: {
@@ -65,6 +67,7 @@ export default {
         nama: "",
         role: "",
         jabatan: "",
+        TotalArtikel: 0,
       },
     };
   },

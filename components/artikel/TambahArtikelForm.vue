@@ -171,6 +171,16 @@ import Cookie from "js-cookie";
 export default {
   components: { Modal },
   middleware: ["check-auth", "auth"],
+  props: {
+    totalArtikel: {
+      type: Number,
+      require: true,
+    },
+    totalArtikelAdmin: {
+      type: Number,
+      require: true,
+    },
+  },
   data() {
     return {
       countDown: 3,
@@ -340,6 +350,9 @@ export default {
           () => {
             this.uploadValue = 100;
             imageRef.snapshot.ref.getDownloadURL().then((url) => {
+              let TotalArtikel = Number(this.totalArtikel) + Number(1);
+              let TotalArtikelAdmin =
+                Number(this.totalArtikelAdmin) + Number(1);
               let tanggalTerbit = moment().format("Do MMMM YYYY");
               let jamTerbit = moment().format("H:mm:ss");
               let nama_admin_cookie = Cookie.get("nama");
@@ -363,14 +376,18 @@ export default {
               if (this.form.jabatan_penulis == "") {
                 this.form.jabatan_penulis = jabatan_cookie;
               }
+
               this.$emit("submit", this.form);
+              this.$store.dispatch("addTotalArtikel", TotalArtikel);
+              this.$store.dispatch("addTotalArtikelAdmin", TotalArtikelAdmin);
+
               this.isUploadingImage = false;
 
               this.searchModalVisible = true;
               this.countDownTimer();
               this.interval = setTimeout(
                 function () {
-                  this.$router.go(-1);
+                  this.$router.push("/artikel", { scroll: false });
                 }.bind(this),
                 5000
               );
